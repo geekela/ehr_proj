@@ -1,0 +1,23 @@
+# Data - never commit
+data/
+
+# Python
+__pycache__/
+*.py[cod]
+.ipynb_checkpoints/
+*.egg-info/
+venv/
+.env
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.idea/
+.vscode/
+*.swp
+
+# Outputs (optional)
+outputs/*.csv
+outputs/*.pkl

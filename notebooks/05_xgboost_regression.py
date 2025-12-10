@@ -334,4 +334,6 @@ except Exception as e:
     print(f"Could not load all results for comparison: {e}")
 
 # %%
-print("\n✅ Regression analysis complete!")
+print("\n Regression analysis complete!")
+
+# %%

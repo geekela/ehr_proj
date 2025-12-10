@@ -311,13 +311,15 @@ plt.show()
 print(f"Saved: {OUTPUT_DIR / '05_probability_distribution.png'}")
 
 # %% Save model and results
+# %% Save model and results
 print("\n" + "=" * 60)
 print("SAVING MODEL AND RESULTS")
 print("=" * 60)
 
-# Save model
-final_model.save_model(OUTPUT_DIR / 'xgboost_model.json')
-print(f"Saved: {OUTPUT_DIR / 'xgboost_model.json'}")
+# Save model using pickle instead (more compatible)
+with open(OUTPUT_DIR / 'xgboost_model.pkl', 'wb') as f:
+    pickle.dump(final_model, f)
+print(f"Saved: {OUTPUT_DIR / 'xgboost_model.pkl'}")
 
 # Save results summary
 results_summary = {
@@ -390,4 +392,6 @@ model.load_model('../outputs/xgboost_model.json')
 """)
 
 # %%
-print("\n✅ XGBoost classification complete!")
+print("\n XGBoost classification complete!")
+
+# %%

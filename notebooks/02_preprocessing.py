@@ -67,7 +67,7 @@ def load_all_patients(data_dir: Path, sample_size: int = None) -> pd.DataFrame:
 
 # %% Load data (use sample_size for testing, None for full dataset)
 # Start with a sample for development, then set to None for full run
-df_raw = load_all_patients(DATA_DIR, sample_size=10000)  # Change to None for full dataset
+df_raw = load_all_patients(DATA_DIR, sample_size=20000)  # Change to None for full dataset
 
 # %% Define feature groups
 STATIC_FEATURES = [

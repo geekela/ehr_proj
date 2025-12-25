@@ -212,7 +212,7 @@ print("LOADING AND PROCESSING DATA")
 print("=" * 60)
 
 # Get patient files (use sample for development, None for full)
-patient_files = get_all_patient_files(DATA_DIR, sample_size=10000)
+patient_files = get_all_patient_files(DATA_DIR, sample_size=20000)
 
 # Process all patients
 data = process_all_patients(patient_files, TEMPORAL_FEATURES, SEQUENCE_LENGTH)

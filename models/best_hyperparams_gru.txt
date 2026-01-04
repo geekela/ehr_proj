@@ -1,0 +1,10 @@
+hidden_dim: 160
+n_layers: 3
+dropout: 0.28644182401748813
+lr: 0.004299697121312118
+weight_decay: 0.00012089088544831119
+bidirectional: True
+pos_weight_mult: 1.8487688658848385
+batch_norm: True
+rnn_type: GRU
+combined_metric: 0.7710950824302774

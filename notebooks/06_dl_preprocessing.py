@@ -119,8 +119,7 @@ def extract_sequence(df: pd.DataFrame,
     available_features = [f for f in temporal_features if f in df_seq.columns]
     
     # Create sequence array
-    sequence = np.zeros((sequence_length, len(available_features)))
-    
+    sequence = np.zeros((sequence_length, len(available_features)), dtype=np.float32)
     for i, feat in enumerate(available_features):
         values = df_seq[feat].values
         # Pad if necessary
@@ -187,6 +186,7 @@ def process_all_patients(file_list: list,
             # Track available features from first valid patient
             if available_features is None:
                 available_features = [f for f in temporal_features if f in df.columns]
+        del df # Free memory
     
     # Convert to arrays
     sequences = np.array(sequences)
@@ -212,10 +212,37 @@ print("LOADING AND PROCESSING DATA")
 print("=" * 60)
 
 # Get patient files (use sample for development, None for full)
-patient_files = get_all_patient_files(DATA_DIR, sample_size=20000)
+patient_files = get_all_patient_files(DATA_DIR, sample_size=30000)
 
 # Process all patients
 data = process_all_patients(patient_files, TEMPORAL_FEATURES, SEQUENCE_LENGTH)
+
+# %% Target Balance Analysis
+print("\n" + "=" * 60)
+print("TARGET CLASS BALANCE (30k Subset)")
+print("=" * 60)
+
+# Calculate counts and percentages
+counts = targets_df['los_binary'].value_counts().sort_index()
+percentages = targets_df['los_binary'].value_counts(normalize=True).sort_index() * 100
+
+balance_summary = pd.DataFrame({
+    'Count': counts,
+    'Percentage (%)': percentages
+})
+balance_summary.index = ['Short Stay (<4 days)', 'Long Stay (>=4 days)']
+
+print(balance_summary)
+
+# Visual check (optional but helpful for Colab)
+import matplotlib.pyplot as plt
+plt.figure(figsize=(6, 4))
+balance_summary['Count'].plot(kind='bar', color=['skyblue', 'salmon'])
+plt.title(f'Target Distribution (N={len(targets_df)})')
+plt.ylabel('Number of Patients')
+plt.xticks(rotation=0)
+plt.show()
+
 
 sequences = data['sequences']
 static_df = data['static_df']
@@ -247,27 +274,14 @@ def impute_sequences(sequences: np.ndarray, strategy: str = 'forward_fill') -> n
     missing_before = np.isnan(sequences).sum()
     
     if strategy == 'forward_fill':
-        for i in range(n_patients):
-            for j in range(n_features):
-                # Get the sequence for this patient and feature
-                seq = sequences[i, :, j]
-                
-                # Forward fill
-                mask = np.isnan(seq)
-                if mask.any():
-                    # Find indices where values are valid
-                    idx = np.where(~mask, np.arange(len(seq)), 0)
-                    np.maximum.accumulate(idx, out=idx)
-                    seq_filled = seq[idx]
-                    
-                    # Backward fill for any remaining NaNs at the start
-                    mask_remaining = np.isnan(seq_filled)
-                    if mask_remaining.any():
-                        idx_back = np.where(~mask_remaining, np.arange(len(seq_filled)), len(seq_filled)-1)
-                        idx_back = np.minimum.accumulate(idx_back[::-1])[::-1]
-                        seq_filled = seq_filled[idx_back]
-                    
-                    sequences[i, :, j] = seq_filled
+        for i in tqdm(range(n_patients), desc="Imputing sequences"):
+            # sequences[i] is a 2D array of shape (24, n_features)
+            # We convert to DataFrame to use vectorized fill operations
+            df_temp = pd.DataFrame(sequences[i])
+            
+            # ffill() handles forward, bfill() handles any NaNs at the start, 
+            # and fillna(0) is a final safety catch for entirely empty columns.
+            sequences[i] = df_temp.ffill().bfill().fillna(0).values
     
     elif strategy == 'mean':
         # Calculate mean per feature across all patients and timesteps
@@ -514,9 +528,9 @@ dl_data = {
 }
 
 # Save
-with open(OUTPUT_DIR / 'dl_data_splits.pkl', 'wb') as f:
+"""with open(OUTPUT_DIR / 'dl_data_splits.pkl', 'wb') as f:
     pickle.dump(dl_data, f)
-print(f"Saved: {OUTPUT_DIR / 'dl_data_splits.pkl'}")
+print(f"Saved: {OUTPUT_DIR / 'dl_data_splits.pkl'}")"""
 
 # Also save as numpy arrays for easier loading in PyTorch
 np.savez_compressed(
@@ -537,20 +551,20 @@ np.savez_compressed(
     mask_val=mask_val,
     mask_test=mask_test
 )
-print(f"Saved: {OUTPUT_DIR / 'dl_sequences.npz'}")
+print(f"Saved: {OUTPUT_DIR / 'dl_sequences_all.npz'}")
 
 # %%
 # %% Verify saved files
-import pickle
+"""import pickle
 import numpy as np
 
 # Load pickle
 with open('../outputs/dl_data_splits.pkl', 'rb') as f:
     pkl_data = pickle.load(f)
-print("Pickle keys:", list(pkl_data.keys()))
+print("Pickle keys:", list(pkl_data.keys()))"""
 
 # Load npz
-npz_data = np.load('../outputs/dl_sequences.npz')
+npz_data = np.load('../outputs/dl_sequences_all.npz')
 print("NPZ files:", npz_data.files)
 
 # Check shapes

@@ -25,7 +25,7 @@ RANDOM_STATE = 42
 
 # %% Load preprocessed data
 print("Loading preprocessed data...")
-with open(OUTPUT_DIR / 'data_splits.pkl', 'rb') as f:
+with open(OUTPUT_DIR / 'data_splits50k.pkl', 'rb') as f:
     splits = pickle.load(f)
 
 X_train = splits['X_train']
@@ -232,9 +232,9 @@ ax.set_xlabel('Importance')
 ax.set_title('Top 15 Features (Regression)')
 
 plt.tight_layout()
-plt.savefig(OUTPUT_DIR / '09_regression_results.png', dpi=150, bbox_inches='tight')
+plt.savefig(OUTPUT_DIR / '09_regression_results50k.png', dpi=150, bbox_inches='tight')
 plt.show()
-print(f"Saved: {OUTPUT_DIR / '09_regression_results.png'}")
+print(f"Saved: {OUTPUT_DIR / '09_regression_results50k.png'}")
 
 # %% Save Results
 print("\n" + "=" * 60)
@@ -242,9 +242,9 @@ print("SAVING RESULTS")
 print("=" * 60)
 
 # Save model
-with open(OUTPUT_DIR / 'xgboost_regressor.pkl', 'wb') as f:
+with open(OUTPUT_DIR / 'xgboost_regressor50k.pkl', 'wb') as f:
     pickle.dump(final_reg, f)
-print(f"Saved: {OUTPUT_DIR / 'xgboost_regressor.pkl'}")
+print(f"Saved: {OUTPUT_DIR / 'xgboost_regressor50k.pkl'}")
 
 # Save results
 regression_results = {
@@ -255,9 +255,9 @@ regression_results = {
     'feature_importance': importance_df.to_dict('records')
 }
 
-with open(OUTPUT_DIR / 'regression_results.pkl', 'wb') as f:
+with open(OUTPUT_DIR / 'regression_results50k.pkl', 'wb') as f:
     pickle.dump(regression_results, f)
-print(f"Saved: {OUTPUT_DIR / 'regression_results.pkl'}")
+print(f"Saved: {OUTPUT_DIR / 'regression_results50k.pkl'}")
 
 # %% Summary for Report
 print("\n" + "=" * 60)
@@ -308,9 +308,9 @@ print("=" * 60)
 
 # Load other results
 try:
-    with open(OUTPUT_DIR / 'xgboost_results.pkl', 'rb') as f:
+    with open(OUTPUT_DIR / 'xgboost_results50k.pkl', 'rb') as f:
         clf_results = pickle.load(f)
-    with open(OUTPUT_DIR / 'cox_results.pkl', 'rb') as f:
+    with open(OUTPUT_DIR / 'cox_results50k.pkl', 'rb') as f:
         cox_results = pickle.load(f)
     
     print("""

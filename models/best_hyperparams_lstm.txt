@@ -1,0 +1,10 @@
+hidden_dim: 192
+n_layers: 2
+dropout: 0.200994973733184
+lr: 0.0038173574431445193
+weight_decay: 0.0002876564900119572
+bidirectional: False
+pos_weight_mult: 1.1654180485483654
+batch_norm: False
+rnn_type: LSTM
+combined_metric: 0.7716395223079323

@@ -35,7 +35,7 @@ RANDOM_STATE = 42
 
 # %% Load preprocessed data
 print("Loading preprocessed data...")
-with open(OUTPUT_DIR / 'data_splits.pkl', 'rb') as f:
+with open(OUTPUT_DIR / 'data_splits50k.pkl', 'rb') as f:
     splits = pickle.load(f)
 
 X_train = splits['X_train']
@@ -218,8 +218,8 @@ print("\nTop 20 Features:")
 print(importance_df.head(20).to_string(index=False))
 
 # Save full importance list
-importance_df.to_csv(OUTPUT_DIR / 'feature_importance.csv', index=False)
-print(f"\nSaved: {OUTPUT_DIR / 'feature_importance.csv'}")
+importance_df.to_csv(OUTPUT_DIR / 'feature_importance50k.csv', index=False)
+print(f"\nSaved: {OUTPUT_DIR / 'feature_importance50k.csv'}")
 
 # %% Visualizations
 print("\n" + "=" * 60)
@@ -286,9 +286,9 @@ ax.set_xlabel('Importance')
 ax.set_title('Top 20 Features')
 
 plt.tight_layout()
-plt.savefig(OUTPUT_DIR / '04_xgboost_results.png', dpi=150, bbox_inches='tight')
+plt.savefig(OUTPUT_DIR / '04_xgboost_results50k.png', dpi=150, bbox_inches='tight')
 plt.show()
-print(f"Saved: {OUTPUT_DIR / '04_xgboost_results.png'}")
+print(f"Saved: {OUTPUT_DIR / '04_xgboost_results50k.png'}")
 
 # %% Predicted Probability Distribution
 fig, ax = plt.subplots(figsize=(10, 6))
@@ -306,7 +306,7 @@ ax.set_title('Distribution of Predicted Probabilities (Test Set)')
 ax.legend()
 
 plt.tight_layout()
-plt.savefig(OUTPUT_DIR / '05_probability_distribution.png', dpi=150, bbox_inches='tight')
+plt.savefig(OUTPUT_DIR / '05_probability_distribution50k.png', dpi=150, bbox_inches='tight')
 plt.show()
 print(f"Saved: {OUTPUT_DIR / '05_probability_distribution.png'}")
 
@@ -317,9 +317,9 @@ print("SAVING MODEL AND RESULTS")
 print("=" * 60)
 
 # Save model using pickle instead (more compatible)
-with open(OUTPUT_DIR / 'xgboost_model.pkl', 'wb') as f:
+with open(OUTPUT_DIR / 'xgboost_model50k.pkl', 'wb') as f:
     pickle.dump(final_model, f)
-print(f"Saved: {OUTPUT_DIR / 'xgboost_model.pkl'}")
+print(f"Saved: {OUTPUT_DIR / 'xgboost_model50k.pkl'}")
 
 # Save results summary
 results_summary = {
@@ -334,9 +334,9 @@ results_summary = {
     'feature_importance': importance_df.to_dict('records')
 }
 
-with open(OUTPUT_DIR / 'xgboost_results.pkl', 'wb') as f:
+with open(OUTPUT_DIR / 'xgboost_results50k.pkl', 'wb') as f:
     pickle.dump(results_summary, f)
-print(f"Saved: {OUTPUT_DIR / 'xgboost_results.pkl'}")
+print(f"Saved: {OUTPUT_DIR / 'xgboost_results50k.pkl'}")
 
 # %% Summary for Report
 print("\n" + "=" * 60)

@@ -6,7 +6,7 @@
 # - Race
 # - Insurance type
 # - Age groups
-#
+
 # Goal: Identify potential biases in model predictions
 
 # %% Imports
@@ -435,3 +435,5 @@ print(f"""
 
 # %%
 print("\n✅ Fairness analysis complete!")
+
+# %%
